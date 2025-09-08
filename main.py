@@ -1,12 +1,7 @@
-import os
-from dotenv import load_dotenv
 from playwright.sync_api import Playwright, sync_playwright
 
-# Carrega variáveis do .env
-load_dotenv()
-
-EMPREGADOR = os.getenv("TANGERINO_EMPREGADOR")
-PIN = os.getenv("TANGERINO_PIN")
+EMPREGADOR = "X20B2"
+PIN = "1295"
 URL = "https://app.tangerino.com.br/Tangerino/pages/LoginPage"
 
 def run(playwright: Playwright) -> None:
@@ -27,7 +22,13 @@ def run(playwright: Playwright) -> None:
     # Clica em registrar
     page.get_by_role("button", name="Registrar").click()
 
-    # Fecha tudo
+    # Espera a confirmação
+    try:
+        page.wait_for_selector("text=Registro efetuado com sucesso", timeout=5000)
+        print("✅ Ponto registrado com sucesso!")
+    except:
+        print("⚠️ Não foi possível confirmar o registro.")
+
     context.close()
     browser.close()
 

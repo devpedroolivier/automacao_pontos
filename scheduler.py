@@ -12,14 +12,18 @@ def job():
     print("▶️ Executando automação do Tangerino...")
     subprocess.run([sys.executable, str(SCRIPT)])
 
-# Horários desejados
-schedule.every().day.at("05:00").do(job)
-schedule.every().day.at("11:00").do(job)
-schedule.every().day.at("12:00").do(job)
-schedule.every().day.at("15:00").do(job)
+# Lista de dias da semana e horários desejados
+dias_da_semana = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+horarios = ['06:00', '11:00', '12:00', '15:00']
 
-print("✅ Scheduler iniciado. Aguardando horários definidos...")
+# Agendar a tarefa para cada dia e horário
+for dia in dias_da_semana:
+    for horario in horarios:
+        # Acessa a função de agendamento dinamicamente
+        getattr(schedule.every(), dia).at(horario).do(job)
+
+print("✅ Scheduler iniciado. Tarefas agendadas de segunda a sexta...")
 
 while True:
     schedule.run_pending()
-    time.sleep(30)  # checa a cada 30 segundos
+    time.sleep(30)  # Checa a cada 30 segundos

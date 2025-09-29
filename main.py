@@ -18,7 +18,7 @@ logging.basicConfig(
 
 def run(playwright: Playwright) -> None:
     logging.info("Iniciando automação do Tangerino...")
-    browser = playwright.chromium.launch(headless=True)  # headless=True
+    browser = playwright.chromium.launch(headless=False)
     context = browser.new_context(
         permissions=[]  # bloqueia câmera e microfone
     )
@@ -29,6 +29,12 @@ def run(playwright: Playwright) -> None:
 
     logging.info("Clicando em 'Registrar Ponto'...")
     page.get_by_role("link", name="Registrar Ponto").click()
+
+    # Adiciona uma espera explícita para o campo de entrada do empregador
+    # Isso garante que a página carregou completamente o campo antes de tentar preenchê-lo
+    # evitando o erro de Timeout.
+    logging.info("Aguardando o campo de empregador carregar...")
+    page.wait_for_selector('role=textbox[name="Código do Empregador *"]')
 
     logging.info("Preenchendo código do empregador...")
     page.get_by_role("textbox", name="Código do Empregador *").fill(EMPREGADOR)
